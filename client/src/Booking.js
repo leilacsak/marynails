@@ -9,7 +9,7 @@ const Booking = () => {
   const [selectedService, setSelectedService] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimeslots, setAvailableTimeslots] = useState([]);
-  const [selectedTimeslot, setSelectedTimeslot] = useState('');
+  const [selectedTimeslot, setSelectedTimeslot] = useState(undefined);
   const [customerDetails, setCustomerDetails] = useState({ name: '', email: '', phone: '' });
   const [bookingSummary, setBookingSummary] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
@@ -78,9 +78,9 @@ const Booking = () => {
       if (response.ok) {
         setBookingSummary(result.booking);
         setSuccessMessage('Successful booking! Please check your email for confirmation.');
-        console.log('Navigáció indítása a Payment oldalra:', result.booking.id);
+        console.log('Navigáció indítása a Payment oldalra:', result.booking.foglalasid);
         // Navigáció a Payment oldalra a foglalás sikeressége után
-        navigate('/payment', { state: { bookingId: result.booking.id } });
+        navigate('/payment', { state: { bookingId: result.booking.foglalasid } });
 
       } else {
         console.error('Foglalási hiba:', result.message);
@@ -150,8 +150,6 @@ const Booking = () => {
                   <option value="">-- Select a Time --</option>
                   {availableTimeslots.map((timeslot, index) => (
                     <option key={`${timeslot.timeslotid}-${index}`} value={timeslot.timeslotid}>
-                      {console.log(typeof timeslot.starttime)} {/* Ellenőrzés */}
-                      {console.log(timeslot.starttime)} {/* Ellenőrzés */}
                       {new Date(timeslot.starttime).toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' })}
                     </option>
                   ))}

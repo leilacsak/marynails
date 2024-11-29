@@ -1,5 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { createPayment, getPaymentById, updatePaymentStatus } = require('../models/payment');
+const { getPaymentById, updatePaymentStatus } = require('../models/payment');
+const pool = require("../db");
 
 // Fizetési tranzakció létrehozása és Stripe PaymentIntent
 const createPaymentIntent = async (req, res) => {
@@ -28,9 +29,9 @@ const createPaymentIntent = async (req, res) => {
 
     // Fizetés rögzítése az adatbázisban
     await pool.query(
-      `INSERT INTO fizetesek (foglalasid, osszeg, datum, status)
-       VALUES ($1, $2, NOW(), $3)`,
-      [foglalasId, amount, 'pending']
+      `INSERT INTO fizetesek (foglalasid, osszeg, datum, status, method)
+       VALUES ($1, $2, NOW(), $3, $4)`,
+      [foglalasId, amount, 'pending', 'card']
     );
 
     res.json({ clientSecret: paymentIntent.client_secret,amount });
