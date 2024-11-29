@@ -1,0 +1,38 @@
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #FDFCF5; /* Csontfehér háttér */
+}
+
+.about-title {
+  font-family: 'Georgia', serif;
+  font-size: 36px;
+  color: #6E6259; /* Earthy barna */
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.about-content {
+  display: flex;
+  gap: 20px;
+  background-color: #F5E6D3; /* Bézs háttér a szövegnek */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.about-image-placeholder {
+  flex: 1;
+  background: #C89F94; /* Agyag szín */
+  height: 300px;
+  border-radius: 10px;
+}
+
+.about-text {
+  flex: 2;
+  font-family: 'Arial', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #6E6259; /* Earthy barna */
+}
+

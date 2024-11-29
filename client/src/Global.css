@@ -1,0 +1,68 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #bf9c81;
+    color: #6E6259; /* Earthy barna */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  
+  h1, h2, h3 {
+    font-family: 'Georgia', serif;
+    color: #6E6259; /* Earthy barna */
+  }
+  
+  a {
+    color: #B7C4B5; /* Sage zöld */
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #C89F94; /* Agyag */
+  }
+  
+  button {
+    background-color: #B7C4B5; /* Sage zöld */
+    color: #FDFCF5; /* Csontfehér */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #6E6259; /* Earthy barna */
+  }
+
+  nav {
+    padding-bottom: 1rem; /* Távolság a navigációs menü alatt */
+    border-bottom: 1px solid #e0e0e0; /* Elválasztó vonal */
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; 
+    margin-top: 20px; 
+  }
+  
+  .box {
+    color: #433b3b;
+    background-color: #e3d3c3;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(6, 6, 6, 0.2);
+    text-align: left;
+    width: 400px; 
+    height: 250px;
+  
+  }
+  
+
+
+
+
+  
+  
+  

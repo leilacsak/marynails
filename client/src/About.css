@@ -1,0 +1,36 @@
+.about-container {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  background-color: #FDFCF5;
+}
+
+.content-section {
+  display: flex; 
+  align-items: flex-start; 
+  gap: 20px; 
+}
+
+.image-container img {
+  width: 700px; 
+  height: auto; 
+  border-radius: 10px; 
+}
+
+.text-container {
+  flex: 1; 
+  text-align: left;
+  line-height: 1.6; 
+}
+
+.text-container h1 {
+  font-size: 2rem;
+  color: #64714d;
+  margin-bottom: 15px;
+}
+
+.text-container p {
+  font-size: 1.2rem;
+  color: #5e5e5e;
+  margin-bottom: 20px;
+}
+

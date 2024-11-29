@@ -1,0 +1,57 @@
+.services-container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    background-color: #FDFCF5;
+  }
+  
+  .services-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #64714d;
+    margin-bottom: 40px;
+  }
+  
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .service-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #d7c6ae;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .service-item:nth-child(odd) {
+    flex-direction: row-reverse;
+  }
+  
+  .service-image img {
+    width: 300px; /* Eredetileg 150px volt */
+    height: 200px; /* Magasság beállítása arányosra */
+    border-radius: 10px;
+    object-fit: cover; /* Biztosítja, hogy a kép ne torzuljon */
+  }
+  
+  .service-description {
+    flex: 1;
+  }
+  
+  .service-description h2 {
+    font-size: 1.8rem; /* Nagyobb címek */
+    color: #64714d;
+    margin-bottom: 10px;
+  }
+  
+  .service-description p {
+    font-size: 1.2rem; /* Nagyobb szöveg */
+    color: #5e5e5e;
+    line-height: 1.6; /* Jobb olvashatóság */
+  }
+  
+  

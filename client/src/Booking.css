@@ -1,0 +1,118 @@
+.booking-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fdf5e6;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #5a5a5a;
+  margin-bottom: 20px;
+}
+
+.step {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+select,
+input[type="text"],
+input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+select:focus,
+input:focus {
+  border-color: #8c665a;
+  outline: none;
+  box-shadow: 0 0 5px rgba(140, 102, 90, 0.4);
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2rem;
+  background-color: #8c665a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #714f44;
+}
+
+.booking-summary {
+  text-align: center;
+  padding: 20px;
+  background-color: #eaf6e9;
+  border: 1px solid #c9e2ce;
+  border-radius: 10px;
+  color: #3c763d;
+}
+
+.booking-summary h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.message {
+  text-align: center;
+  color: #d9534f;
+  font-size: 1.2rem;
+  margin-top: 20px;
+}
+
+select {
+  color: black; /* Betűszín */
+  background-color: white; /* Háttérszín */
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+option {
+  color: black; /* Betűszín */
+  background-color: white; /* Háttérszín */
+}
+
+.react-datepicker {
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.react-datepicker__header {
+  background-color: #8c665a;
+  color: white;
+}
+.react-datepicker__day--selected {
+  background-color: #8c665a;
+  color: white;
+}
+
+
+  
+  
+  
