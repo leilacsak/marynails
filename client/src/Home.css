@@ -1,0 +1,66 @@
+.home-container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    background-color: #FDFCF5;
+  }
+  
+  .top-section {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-start;
+    margin-bottom: 40px;
+    gap: 20px;
+}
+
+.text-container {
+    text-align: left; 
+    max-width: 50%; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: flex-start; 
+    gap: 20px; 
+    position: relative; 
+    transform: 20px; 
+}
+
+
+.image-container img {
+    width: 800px;
+    height: auto;
+    border-radius: 10px;
+}
+
+  
+  .text-container h1 {
+    font-size: 3rem;
+    color: #64714d;
+    margin: 0; 
+  }
+  
+  .text-container p {
+    font-size: 2rem;
+    color: #644545;
+    margin: 0;
+  }
+  
+  .text-container .appointment-button {
+    background-color: #8c665a;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-start;
+  }
+  
+  .text-container .appointment-button:hover {
+    background-color: #714f44;
+  }
+  
+ 
+  
+  
+  
+  
