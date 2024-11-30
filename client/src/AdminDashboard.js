@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './AdminDashboard.css';
+import {formatDate, formatTime} from "./utils";
 
 const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
@@ -136,17 +137,34 @@ const AdminDashboard = () => {
                 <th>Ügyfél neve</th>
                 <th>Szolgáltatás</th>
                 <th>Dátum</th>
+                <th>Kezdés</th>
+                <th>Befejezés</th>
                 <th>Státusz</th>
                 <th>Műveletek</th>
               </tr>
             </thead>
             <tbody>
-              {bookings.map((booking) => (
+              {bookings.sort((a,b) => {
+                // 2024-09-29T23:00:00Z
+                const aDate = new Date(a.datum);
+                const aStart = new Date(a.starttime);
+                aDate.setHours(aStart.getHours());
+                aDate.setMinutes(aStart.getMinutes());
+
+                const bDate = new Date(b.datum);
+                const bStart = new Date(b.starttime);
+                bDate.setHours(bStart.getHours());
+                bDate.setMinutes(bStart.getMinutes());
+
+                return aDate.getTime() - bDate.getTime();
+              }).map((booking) => (
                 <tr key={booking.foglalasid}>
                   <td>{booking.foglalasid}</td>
                   <td>{booking.name}</td>
                   <td>{booking.serviceName}</td>
-                  <td>{booking.datum}</td>
+                  <td>{formatDate(booking.datum)}</td>
+                  <td>{formatTime(booking.starttime)}</td>
+                  <td>{formatTime(booking.endtime)}</td>
                   <td>{booking.status}</td>
                   <td>
                     <button onClick={() => updateBookingStatus(booking.foglalasid, 'approved')}>

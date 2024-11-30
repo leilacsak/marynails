@@ -70,13 +70,15 @@ const createBooking = async (req, res) => {
     // 5. Idősáv foglalása
     await updateTimeslotAvailability(timeslotId, newBooking.rows[0].foglalasid);
 
+    const auth =   {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    }
+    console.log({auth})
     // 6. Email küldése
     const transporter = nodemailer.createTransport({
       service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
+      auth,
     });
 
       //email az ügyfélnek megy
@@ -127,9 +129,10 @@ const getAllBookingsHandler = async (req, res) => {
   try {
     const bookings = await pool.query(
       `SELECT f.foglalasid, f.serviceid, f.datum, f.timeslotid, f.status,
-              u.name, u.email, u.phone
+              u.name, u.email, u.phone, t.starttime, t.endtime
        FROM foglalasok f
        JOIN ugyfelek u ON f.userid = u.userid
+       JOIN timeslots t on f.timeslotid = t.timeslotid
        ORDER BY f.datum, f.timeslotid`
     );
     res.status(200).json({ bookings: bookings.rows });
