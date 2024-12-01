@@ -10,7 +10,7 @@ const AdminDashboard = () => {
   // Szolgáltatás neve keresése serviceId alapján
   const getServiceNameById = (serviceId) => {
     const service = services.find((s) => s.serviceid === serviceId);
-    return service ? service.nev : 'Ismeretlen szolgáltatás';
+    return service?.nev || 'Ismeretlen szolgáltatás';
   };
 
   // Foglalások lekérdezése
