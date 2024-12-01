@@ -47,17 +47,36 @@ const createBooking = async (req, res) => {
 
     // 2. Szolgáltatás ellenőrzése
     const service = await pool.query(
-      'SELECT idotartam FROM szolgaltatasok WHERE serviceid = $1',
+      'SELECT nev FROM szolgaltatasok WHERE serviceid = $1',
       [serviceId]
     );
     if (service.rows.length === 0) {
       return res.status(404).json({ message: 'Szolgáltatás nem található!' });
     }
+    const serviceName = service.rows[0].nev;
+    const serviceDurationMinutes = parseInt(service.rows[0].idotartam, 10)
+
 
     // 3. Idősáv ellenőrzése
-    const timeslot = await getTimeslotById(timeslotId);
-    if (!timeslot || !timeslot.isavailable) {
-      return res.status(400).json({ message: 'Idősáv nem található vagy foglalt!' });
+    const timeslot = await pool.query(
+      'SELECT starttime, endtime, isavailable FROM timeslots WHERE timeslotid = $1',
+      [timeslotId]
+    );if (timeslot.rows.length === 0) {
+      return res.status(404).json({ message: 'Idősáv nem található!' });
+    }
+    
+    const timeslotStartTime = new Date(timeslot.rows[0].starttime);
+    const timeslotEndTime = new Date(timeslot.rows[0].endtime);
+    
+    // Ellenőrizzük, hogy a szolgáltatás belefér-e az idősávba
+    const calculatedEndTime = new Date(timeslotStartTime.getTime() + serviceDurationMinutes * 60000);
+    if (calculatedEndTime > timeslotEndTime) {
+      return res.status(400).json({ message: 'A szolgáltatás nem fér bele az idősávba!' });
+    }
+    
+    // Ellenőrizzük, hogy az idősáv elérhető-e
+    if (!timeslot.rows[0].isavailable) {
+      return res.status(400).json({ message: 'Az idősáv már foglalt!' });
     }
 
     // 4. Foglalás rögzítése
@@ -86,16 +105,22 @@ const createBooking = async (req, res) => {
       from: process.env.EMAIL_USER, //admin email címe
       to: email, // customer email címe
       subject: 'Booking Confirmation',
-      text: `Dear ${name},\n\nThank you for your booking!\nService: ${serviceId}\nDate: ${datum}\nTime: ${timeslotId}`,
+      text: `Dear ${name},\n\nThank you for your booking!\nService: ${serviceName}\nDate: ${datum}\nTime: ${timeslotStartTime.toLocaleTimeString('hu-HU', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })}`,
     };
-    
+      
     //Email az adminnak
     const adminMailOptions = {
       from: process.env.EMAIL_USER, // Az admin email címe a küldőként
       to: process.env.EMAIL_USER,   // Az admin email címe a fogadóként
       subject: 'Új foglalás érkezett',
-      text: `Új foglalás érkezett:\n\nNév: ${name}\nEmail: ${email}\nTelefonszám: ${phone}\nSzolgáltatás ID: ${serviceId}\nDátum: ${datum}\nIdősáv: ${timeslotId}\n\nKérjük, ellenőrizd az admin felületen!`,
-    };
+      text: `Új foglalás érkezett:\n\nNév: ${name}\nEmail: ${email}\nTelefonszám: ${phone}\nSzolgáltatás: ${serviceName}\nDátum: ${datum}\nIdőpont:${timeslotStartTime.toLocaleTimeString('hu-HU',{
+        hour: '2-digit',
+    minute: '2-digit',
+  })}, \n\nKérjük, ellenőrizd az admin felületen!`,  
+  };
     
     // Küldés az ügyfélnek
     transporter.sendMail(customerMailOptions, (error) => {
