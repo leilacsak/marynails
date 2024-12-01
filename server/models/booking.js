@@ -112,6 +112,7 @@ const updateBookingStatusInDB = async (bookingId, status) => {
 
 // Delete
 const deleteBookingById = async (bookingId) => {
+
   const result = await pool.query(
     'DELETE FROM foglalasok WHERE foglalasid = $1 RETURNING *',
     [bookingId]
@@ -141,12 +142,38 @@ const deleteBookingById = async (bookingId) => {
   );
   const customer = customerQuery.rows[0];
 
+  // Debug log hozzáadása a lekérdezés után
+  console.log('Raw Start Time:', booking.starttime);
+  console.log('Raw End Time:', booking.endtime);
+  console.log('Start Time Type:', typeof booking.starttime);
+  console.log('End Time Type:', typeof booking.endtime);
+
+  const formattedDate = new Date(Date.parse(booking.datum)).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const startTime = new Date(Date.parse(booking.starttime)).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+  const endTime = new Date(Date.parse(booking.endtime)).toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
+
   //ügyfél
   if (customer && customer.email) {
     sendEmail(
       customer.email,
       'Booking Deleted',
-      `Dear ${customer.name},\n\nYour booking has been deleted.\nDate: ${booking.datum}\nTimeslot: ${booking.timeslotid}`
+      `Dear ${customer.name},\n\nYour booking has been deleted.\nDate: ${formattedDate}\nTime: ${startTime}–${endTime}`
     );
   } else {
     console.log('Customer email is missing. Notification skipped.');
@@ -154,9 +181,9 @@ const deleteBookingById = async (bookingId) => {
 
   //admin
   sendEmail(
-    process.env.ADMIN_EMAIL,
+    process.env.EMAIL_USER,
     'Booking Deleted',
-    `Booking has been deleted.\nBooking ID: ${bookingId}`
+    `Booking has been deleted.\nBooking ID: ${bookingId},\nDate: ${formattedDate}\nTime: ${startTime}–${endTime}`
   );
 
   return booking;
@@ -183,6 +210,7 @@ const getBookingById = async (bookingId) => {
       console.log(`No booking found for ID: ${bookingId}`);
       return null;
     }
+
 
     return result.rows[0];
   } catch (error) {
