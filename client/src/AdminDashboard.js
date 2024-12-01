@@ -6,6 +6,13 @@ const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
 
+  
+  // Szolgáltatás neve keresése serviceId alapján
+  const getServiceNameById = (serviceId) => {
+    const service = services.find((s) => s.serviceid === serviceId);
+    return service ? service.nev : 'Ismeretlen szolgáltatás';
+  };
+
   // Foglalások lekérdezése
   useEffect(() => {
     fetch('http://localhost:3000/api/bookings', {
@@ -161,7 +168,7 @@ const AdminDashboard = () => {
                 <tr key={booking.foglalasid}>
                   <td>{booking.foglalasid}</td>
                   <td>{booking.name}</td>
-                  <td>{booking.serviceName}</td>
+                  <td>{getServiceNameById(booking.serviceid)}</td>
                   <td>{formatDate(booking.datum)}</td>
                   <td>{formatTime(booking.starttime)}</td>
                   <td>{formatTime(booking.endtime)}</td>
@@ -197,7 +204,7 @@ const AdminDashboard = () => {
           <ul>
             {services.map((service) => (
               <li key={service.serviceid}>
-                {service.nev} - {formatInterval(service.idotartam)}
+                {service.nev} - {formatInterval(service.idotartam)} - £{service.ar}
               </li>
             ))}
           </ul>
