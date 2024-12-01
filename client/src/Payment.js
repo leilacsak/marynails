@@ -45,7 +45,7 @@ const Payment = () => {
   return (
     <div className="payment-container">
       <h1>Complete Your Payment</h1>
-      {<h2>Total Amount: ${amount.toFixed(2)}</h2>}
+      {<h2>Total Amount: £{amount.toFixed(2)}</h2>}
       {loading ? (
       <p>Loading payment details...</p>
     ) : clientSecret ? (
