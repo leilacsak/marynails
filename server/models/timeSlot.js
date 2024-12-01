@@ -18,7 +18,7 @@ const updateTimeslotAvailability = async (timeslotId) => {
 // Idősáv visszaállítása (elérhetővé tétele)
 const resetTimeslotAvailability = async (timeslotId) => {
   const result = await pool.query(
-    'UPDATE timeslots SET isAvailable = true, foglalasId = NULL WHERE timeslotId = $1 RETURNING *',
+    'UPDATE timeslots SET isAvailable = true WHERE timeslotId = $1 RETURNING *',
     [timeslotId]
   );
   return result.rows[0]; 
