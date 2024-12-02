@@ -113,15 +113,24 @@ const updateBookingStatusInDB = async (bookingId, status) => {
 // Delete
 const deleteBookingById = async (bookingId) => {
 
-  const result = await pool.query(
-    'DELETE FROM foglalasok WHERE foglalasid = $1 RETURNING *',
-    [bookingId]
-  );
+  const result = await pool.query(`
+    SELECT *
+    FROM foglalasok f 
+    JOIN timeslots t on f.timeslotid = t.timeslotid
+    JOIN ugyfelek u on f.userid = u.userid
+    WHERE f.foglalasid = $1
+  `, [bookingId]
+  )
 
   if (result.rows.length === 0) {
     console.error('Error: Booking not found in the database.');
     return null;
   }
+
+  await pool.query(
+    'DELETE FROM foglalasok WHERE foglalasid = $1',
+    [bookingId]
+  );
 
   const booking = result.rows[0];
 
@@ -135,12 +144,6 @@ const deleteBookingById = async (bookingId) => {
     );
     return booking;
   }
-
-  const customerQuery = await pool.query(
-    `SELECT name, email FROM ugyfelek WHERE userid = $1`,
-    [booking.userid]
-  );
-  const customer = customerQuery.rows[0];
 
   // Debug log hozzáadása a lekérdezés után
   console.log('Raw Start Time:', booking.starttime);
@@ -169,11 +172,11 @@ const deleteBookingById = async (bookingId) => {
 
 
   //ügyfél
-  if (customer && customer.email) {
+  if (booking.email) {
     sendEmail(
-      customer.email,
+      booking.email,
       'Booking Deleted',
-      `Dear ${customer.name},\n\nYour booking has been deleted.\nDate: ${formattedDate}\nTime: ${startTime}–${endTime}`
+      `Dear ${booking.name},\n\nYour booking has been deleted.\nDate: ${formattedDate}\nTime: ${startTime}–${endTime}`
     );
   } else {
     console.log('Customer email is missing. Notification skipped.');
