@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Booking.css';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 const Booking = () => {
   const [services, setServices] = useState([]);
@@ -14,6 +14,14 @@ const Booking = () => {
   const [bookingSummary, setBookingSummary] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+
+  const location = useLocation();
+  const serviceId = location.state?.serviceId
+
+  useEffect(() => {
+    if (serviceId) setSelectedService(serviceId)
+  }, [serviceId])
 
   const navigate = useNavigate(); // Navigáció inicializálása
 

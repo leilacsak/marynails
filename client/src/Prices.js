@@ -1,19 +1,28 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './Prices.css';
 import { useNavigate } from 'react-router-dom';
 
 const Prices = () => {
   const navigate = useNavigate();
+  const [services, setServices] = useState([]);
 
-  const services = [
-    { id: 1, name: 'Manicure', price: '£20' },
-    { id: 2, name: 'Extensions', price: '£60' },
-    { id: 3, name: 'Gel Polish', price: '£40' },
-    { id: 4, name: 'Extreme/Bridal', price: '£100' },
-  ];
 
+  useEffect(() => {
+    fetch('http://localhost:3000/api/services')
+        .then((response) => {
+          if (!response.ok) throw new Error('Szolgáltatások lekérdezése sikertelen!');
+          return response.json();
+        })
+        .then((data) => setServices(data.services))
+        .catch((error) => console.error('Hiba a szolgáltatások lekérdezése során:', error));
+  }, []);
+
+
+  useEffect(() => {
+    console.log({services})
+  }, [services]);
   const handleBookingClick = (serviceId) => {
-    navigate('/booking', { state: { serviceId } }); 
+    navigate('/bookings', { state: { serviceId } });
   };
 
   return (
@@ -22,12 +31,12 @@ const Prices = () => {
         <h1 className="prices-title">Price List</h1>
         <div className="prices-list">
           {services.map((service) => (
-            <div className="price-item" key={service.id}>
-              <h2>{service.name}</h2>
-              <p>{service.price}</p>
+            <div className="price-item" key={service.serviceid}>
+              <h2>{service.nev}</h2>
+              <p>{service.ar}</p>
               <button
                 className="appointment-button"
-                onClick={() => handleBookingClick(service.id)}
+                onClick={() => handleBookingClick(service.serviceid)}
               >
                 Book {service.name}
               </button>
