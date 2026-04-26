@@ -47,7 +47,7 @@ const createBooking = async (req, res) => {
 
     // 2. Szolgáltatás ellenőrzése
     const service = await pool.query(
-      'SELECT nev FROM szolgaltatasok WHERE serviceid = $1',
+      'SELECT nev, idotartam FROM szolgaltatasok WHERE serviceid = $1',
       [serviceId]
     );
     if (service.rows.length === 0) {
