@@ -94,52 +94,53 @@ const createBooking = async (req, res) => {
       pass: process.env.EMAIL_PASS,
     }
     
-    // 6. Email küldése
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth,
-    });
+  //   // 6. Email küldése
+  //   const transporter = nodemailer.createTransport({
+  //     service: 'gmail',
+  //     auth,
+  //   });
 
-      //email az ügyfélnek megy
-      const customerMailOptions = {
-      from: process.env.EMAIL_USER, //admin email címe
-      to: email, // customer email címe
-      subject: 'Booking Confirmation',
-      text: `Dear ${name},\n\nThank you for your booking!\nService: ${serviceName}\nDate: ${datum}\nTime: ${timeslotStartTime.toLocaleTimeString('hu-HU', {
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`,
-    };
+  //     //email az ügyfélnek megy
+  //     const customerMailOptions = {
+  //     from: process.env.EMAIL_USER, //admin email címe
+  //     to: email, // customer email címe
+  //     subject: 'Booking Confirmation',
+  //     text: `Dear ${name},\n\nThank you for your booking!\nService: ${serviceName}\nDate: ${datum}\nTime: ${timeslotStartTime.toLocaleTimeString('hu-HU', {
+  //       hour: '2-digit',
+  //       minute: '2-digit',
+  //     })}`,
+  //   };
       
-    //Email az adminnak
-    const adminMailOptions = {
-      from: process.env.EMAIL_USER, // Az admin email címe a küldőként
-      to: process.env.EMAIL_USER,   // Az admin email címe a fogadóként
-      subject: 'Új foglalás érkezett',
-      text: `Új foglalás érkezett:\n\nNév: ${name}\nEmail: ${email}\nTelefonszám: ${phone}\nSzolgáltatás: ${serviceName}\nDátum: ${datum}\nIdőpont:${timeslotStartTime.toLocaleTimeString('hu-HU',{
-        hour: '2-digit',
-    minute: '2-digit',
-  })}, \n\nKérjük, ellenőrizd az admin felületen!`,  
-  };
+  //   //Email az adminnak
+  //   const adminMailOptions = {
+  //     from: process.env.EMAIL_USER, // Az admin email címe a küldőként
+  //     to: process.env.EMAIL_USER,   // Az admin email címe a fogadóként
+  //     subject: 'Új foglalás érkezett',
+  //     text: `Új foglalás érkezett:\n\nNév: ${name}\nEmail: ${email}\nTelefonszám: ${phone}\nSzolgáltatás: ${serviceName}\nDátum: ${datum}\nIdőpont:${timeslotStartTime.toLocaleTimeString('hu-HU',{
+  //       hour: '2-digit',
+  //   minute: '2-digit',
+  // })}, \n\nKérjük, ellenőrizd az admin felületen!`,  
+  // };
     
-    // Küldés az ügyfélnek
-    transporter.sendMail(customerMailOptions, (error) => {
-      if (error) {
-        console.error('Hiba az ügyfél email küldése során:', error);
-      } else {
-        console.log('Ügyfél email sikeresen elküldve.');
-      }
-    });
+  //   // Küldés az ügyfélnek
+  //   transporter.sendMail(customerMailOptions, (error) => {
+  //     if (error) {
+  //       console.error('Hiba az ügyfél email küldése során:', error);
+  //     } else {
+  //       console.log('Ügyfél email sikeresen elküldve.');
+  //     }
+  //   });
 
-    // Küldés az adminnak
-    transporter.sendMail(adminMailOptions, (error) => {
-      if (error) {
-        console.error('Hiba az admin email küldése során:', error);
-      } else {
-        console.log('Admin email sikeresen elküldve.');
-      }
-    });
-    
+  //   // Küldés az adminnak
+  //   transporter.sendMail(adminMailOptions, (error) => {
+  //     if (error) {
+  //       console.error('Hiba az admin email küldése során:', error);
+  //     } else {
+  //       console.log('Admin email sikeresen elküldve.');
+  //     }
+  //   });
+  
+    // 7. Válasz a kliensnek
     res.status(201).json({ message: 'Foglalás sikeresen létrehozva!', booking: newBooking.rows[0] });
   } catch (error) {
     console.error('Hiba a foglalás során:', error.message);
