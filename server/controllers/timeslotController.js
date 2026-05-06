@@ -13,7 +13,7 @@ if (!serviceId || !date) {
 try {
   // Idősávellenőrzés
   const existingSlots = await pool.query(
-    'SELECT * FROM timeslots WHERE serviceid = $1 AND DATE(starttime) = $2',
+    'SELECT * FROM timeslots WHERE serviceid = $1 AND DATE(starttime) = $2 AND isavailable = true ORDER BY starttime',
     [serviceId, date]
   );
 

@@ -9,7 +9,7 @@ const Booking = () => {
   const [selectedService, setSelectedService] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimeslots, setAvailableTimeslots] = useState([]);
-  const [selectedTimeslot, setSelectedTimeslot] = useState(undefined);
+  const [selectedTimeslot, setSelectedTimeslot] = useState('');
   const [customerDetails, setCustomerDetails] = useState({ name: '', email: '', phone: '' });
   const [bookingSummary, setBookingSummary] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
@@ -27,7 +27,7 @@ const Booking = () => {
 
   // Szolgáltatások betöltése
   useEffect(() => {
-    fetch('http://localhost:3000/api/services')
+    fetch('http://localhost:3001/api/services')
       .then((response) => {
         if (!response.ok) throw new Error('Szolgáltatások lekérdezése sikertelen!');
         return response.json();
@@ -40,7 +40,7 @@ const Booking = () => {
   useEffect(() => {
     if (selectedService && selectedDate) {
       const formattedDate = selectedDate.toISOString().split('T')[0];
-      fetch(`http://localhost:3000/api/timeslots?serviceId=${selectedService}&date=${formattedDate}`)
+      fetch(`http://localhost:3001/api/timeslots?serviceId=${selectedService}&date=${formattedDate}`)
         .then((response) => {
           if (!response.ok) throw new Error('Idősávok lekérdezése sikertelen!');
           return response.json();
@@ -66,7 +66,7 @@ const Booking = () => {
     const bookingData = {
       serviceid: selectedService,
       datum: selectedDate.toISOString().split('T')[0],
-      timeslotid: selectedTimeslot,
+      timeslotid: parseInt(selectedTimeslot, 10),
       name: customerDetails.name,
       email: customerDetails.email,
       phone: customerDetails.phone,
@@ -76,7 +76,7 @@ const Booking = () => {
 
 
     try {
-      const response = await fetch('http://localhost:3000/api/bookings', {
+      const response = await fetch('http://localhost:3001/api/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookingData),
@@ -150,9 +150,8 @@ const Booking = () => {
                  id="timeslot"
                   value={selectedTimeslot}
                   onChange={(e) => {
-                    const timeslotId = parseInt(e.target.value, 10);
-                    setSelectedTimeslot(timeslotId);
-                    console.log('Selected Timeslot ID:', timeslotId);
+                    setSelectedTimeslot(e.target.value);
+                    console.log('Selected Timeslot ID:', e.target.value);
                   }}
                 >
                   <option value="">-- Select a Time --</option>
