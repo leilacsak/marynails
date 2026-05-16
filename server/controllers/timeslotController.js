@@ -1,6 +1,16 @@
 const pool = require('../db');
 const { getTimeslotById, updateTimeslotAvailability } = require('../models/timeSlot');
 
+const formatLocalDate = (value) => {
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, '0');
+  const day = String(value.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const isFutureTimeslot = (timeslot, now) => new Date(timeslot.starttime) > now;
+const hasConfirmedBooking = (timeslot) => Boolean(timeslot.booking_status === 'confirmed');
+
 // Idősávok lekérdezése
 const getTimeslots = async (req, res) => {const { serviceId, date } = req.query;
 
@@ -11,15 +21,24 @@ if (!serviceId || !date) {
 }
 
 try {
+  const now = new Date();
+  const requestedDate = new Date(`${date}T00:00:00`);
+  const isToday = formatLocalDate(requestedDate) === formatLocalDate(now);
+
   // Idősávellenőrzés
   const checkSlots = await pool.query(
-    'SELECT * FROM timeslots WHERE serviceid = $1 AND DATE(starttime) = $2 ORDER BY starttime',
+    `SELECT t.*, f.status AS booking_status
+     FROM timeslots t
+     LEFT JOIN foglalasok f ON f.timeslotid = t.timeslotid
+     WHERE t.serviceid = $1
+       AND DATE(t.starttime) = $2
+     ORDER BY t.starttime`,
     [serviceId, date]
   );
 
   // Ha már van idősáv, nem generál újat
   if (checkSlots.rows.length > 0) {
-    const existingSlots = checkSlots.rows.filter(slot => slot.isavailable);
+    const existingSlots = checkSlots.rows.filter((slot) => slot.isavailable && !hasConfirmedBooking(slot) && (!isToday || isFutureTimeslot(slot, now)));
     return res.status(200).json({ message: 'Idősávok lekérve!', timeslots: existingSlots });
   }
 
@@ -65,9 +84,28 @@ try {
 
     currentTime = nextTime;
   }
+
+  const futureGeneratedTimeslots = generatedTimeslots.filter((timeslot) => !isToday || isFutureTimeslot(timeslot, now));
+
   // Mentés az adatbázisba
   const insertedRows = [];
-  for (const timeslot of generatedTimeslots) {
+  for (const timeslot of futureGeneratedTimeslots) {
+    const bookedSlot = await pool.query(
+      `SELECT 1
+       FROM foglalasok f
+       JOIN timeslots t ON f.timeslotid = t.timeslotid
+       WHERE f.status = 'confirmed'
+         AND t.serviceid = $1
+         AND t.starttime = $2
+         AND t.endtime = $3
+       LIMIT 1`,
+      [timeslot.serviceid, timeslot.starttime, timeslot.endtime]
+    );
+
+    if (bookedSlot.rows.length > 0) {
+      continue;
+    }
+
     const result = await pool.query(
       `INSERT INTO timeslots (starttime, endtime, isavailable, serviceid)
        VALUES ($1, $2, $3, $4) RETURNING *`,

@@ -22,7 +22,7 @@ const sendBookingEmails = async ({ email, name, phone, serviceName, datum, start
     minute: '2-digit',
   });
 
-    const formattedDate = new Date(datum).toLocaleDateString('hu-HU', {
+    const formattedDate = new Date(datum).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

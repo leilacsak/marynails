@@ -7,9 +7,15 @@ const ThankYou = () => {
   const navigate = useNavigate();
   const { amount, bookingDetails } = location.state || {};
 
+  const serviceName = bookingDetails?.serviceName || bookingDetails?.service_name;
+  const bookingDate = bookingDetails?.date || bookingDetails?.datum;
+  const bookingStartTime = bookingDetails?.startTime || bookingDetails?.starttime;
+  const bookingEndTime = bookingDetails?.endTime || bookingDetails?.endtime;
+  const paidAmount = bookingDetails?.amount ?? amount;
+
   const formatTime = (value) => {
     if (!value) return '';
-    return new Date(value).toLocaleTimeString('hu-HU', {
+    return new Date(value).toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -17,7 +23,7 @@ const ThankYou = () => {
 
   const formatDate = (value) => {
     if (!value) return '';
-    return new Date(value).toLocaleDateString('hu-HU', {
+    return new Date(value).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -30,13 +36,13 @@ const ThankYou = () => {
         <h1>Booking confirmed</h1>
         <p>Your payment was successful.</p>
         <p>Booking confirmation has been sent to your email.</p>
-        {bookingDetails?.serviceName && (
-          <p className="booking-details">You booked: {bookingDetails.serviceName}</p>
+        {serviceName && (
+          <p className="booking-details">You booked: {serviceName}</p>
         )}
-        {bookingDetails?.date && (
-          <p className="booking-details">When: {formatDate(bookingDetails.date)} at {formatTime(bookingDetails.startTime)} - {formatTime(bookingDetails.endTime)}</p>
+        {bookingDate && (
+          <p className="booking-details">When: {formatDate(bookingDate)} at {formatTime(bookingStartTime)} - {formatTime(bookingEndTime)}</p>
         )}
-        {typeof amount === 'number' && <p className="booking-amount">Paid: £{amount.toFixed(2)}</p>}
+        {typeof paidAmount === 'number' && <p className="booking-amount">Paid: £{paidAmount.toFixed(2)}</p>}
         <button type="button" className="thank-you-button" onClick={() => navigate('/')}>Go to Home</button>
       </div>
     </div>

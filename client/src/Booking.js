@@ -25,6 +25,15 @@ const Booking = () => {
 
   const navigate = useNavigate(); // Navigáció inicializálása
 
+  const formatLocalDate = (value) => {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const isFutureTimeslot = (timeslot) => new Date(timeslot.starttime) > new Date();
+
   // Szolgáltatások betöltése
   useEffect(() => {
     fetch('http://localhost:3001/api/services')
@@ -39,15 +48,16 @@ const Booking = () => {
   // Idősávok betöltése
   useEffect(() => {
     if (selectedService && selectedDate) {
-      const formattedDate = selectedDate.toISOString().split('T')[0];
+      const formattedDate = formatLocalDate(selectedDate);
       fetch(`http://localhost:3001/api/timeslots?serviceId=${selectedService}&date=${formattedDate}`)
         .then((response) => {
           if (!response.ok) throw new Error('Idősávok lekérdezése sikertelen!');
           return response.json();
         })
         .then((data) =>{
-          console.log(data.timeslots); 
-          setAvailableTimeslots(data.timeslots || []);
+          const visibleTimeslots = (data.timeslots || []).filter(isFutureTimeslot);
+          console.log(visibleTimeslots); 
+          setAvailableTimeslots(visibleTimeslots);
         })
         .catch((error) => console.error('Hiba az idősávok lekérdezése során:', error));
     }
@@ -65,7 +75,7 @@ const Booking = () => {
 
     const bookingData = {
       serviceid: selectedService,
-      datum: selectedDate.toISOString().split('T')[0],
+      datum: formatLocalDate(selectedDate),
       timeslotid: parseInt(selectedTimeslot, 10),
       name: customerDetails.name,
       email: customerDetails.email,

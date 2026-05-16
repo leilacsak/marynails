@@ -59,7 +59,15 @@ const Payment = () => {
       state: {
         bookingId,
         amount,
-        bookingDetails: data.booking || bookingDetails,
+        bookingDetails: data.booking
+          ? {
+              serviceName: data.booking.serviceName,
+              date: data.booking.datum,
+              startTime: data.booking.starttime,
+              endTime: data.booking.endtime,
+              amount: data.booking.amount,
+            }
+          : bookingDetails,
       },
       replace: true,
     });
