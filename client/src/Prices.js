@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import './Prices.css';
 import { useNavigate } from 'react-router-dom';
 
 const Prices = () => {

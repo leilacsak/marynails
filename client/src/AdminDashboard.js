@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './AdminDashboard.css';
 import {formatDate, formatTime} from "./utils";
 
 const AdminDashboard = () => {

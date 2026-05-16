@@ -1,14 +1,13 @@
 import React from 'react';
 import ContactInfo from './ContactInfo';
 import OpeningHours from './OpeningHours';
-import './About.css';
 
 const About = () => {
   return (
     <div className="about-container">
       <div className="content-section">
         <div className="image-container">
-          <img src="/headshot.jpg" alt="About MaryNails" />
+          <img src="/images/headshot.jpg" alt="About MaryNails" />
         </div>
         <div className="text-container">
           <h1>About Me</h1>

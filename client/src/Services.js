@@ -1,5 +1,4 @@
 import React from 'react';
-import './Services.css';
 
 const Services = () => {
   return (
@@ -8,7 +7,7 @@ const Services = () => {
       <div className="services-list">
         <div className="service-item">
           <div className="service-image">
-            <img src="/manicure.jpg" alt="Manicure" />
+            <img src="/images/manicure.jpg" alt="Manicure" />
           </div>
           <div className="service-description">
             <h2>Manicure</h2>
@@ -18,7 +17,7 @@ const Services = () => {
 
         <div className="service-item">
           <div className="service-image">
-            <img src="/extensions.jpg" alt="Gel Polish" />
+            <img src="/images/extensions.jpg" alt="Gel Polish" />
           </div>
           <div className="service-description">
             <h2>Gel Extensions - Full Set</h2>
@@ -29,7 +28,7 @@ const Services = () => {
 
         <div className="service-item">
           <div className="service-image">
-            <img src="gellakk.jpg" alt="Gel Refills" />
+            <img src="/images/gellakk.jpg" alt="Gel Refills" />
           </div>
           <div className="service-description">
             <h2>Gel Polish</h2>
@@ -39,7 +38,7 @@ const Services = () => {
 
         <div className="service-item">
           <div className="service-image">
-            <img src="/bridal.jpg" alt="Wedding Nails" />
+            <img src="/images/bridal.jpg" alt="Wedding Nails" />
           </div>
           <div className="service-description">
             <h2>Extreme/Wedding Nails</h2>

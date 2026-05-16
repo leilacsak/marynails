@@ -1,7 +1,6 @@
 import React from 'react';
 import ContactInfo from './ContactInfo';
 import OpeningHours from './OpeningHours';
-import './Contact.css';
 
 const Contact = () => {
   return (

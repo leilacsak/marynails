@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './Booking.css';
 import {useLocation, useNavigate} from 'react-router-dom';
 
 const Booking = () => {
