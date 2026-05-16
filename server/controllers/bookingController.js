@@ -1,7 +1,6 @@
 const { updateBookingStatusInDB, deleteBookingById, getBookingById } = require('../models/booking');
 const { getTimeslotById, updateTimeslotAvailability, resetTimeslotAvailability } = require('../models/timeSlot');
 const pool = require('../db'); 
-const nodemailer = require('nodemailer');
 
 
 
@@ -62,11 +61,17 @@ const createBooking = async (req, res) => {
       'SELECT starttime, endtime, isavailable FROM timeslots WHERE timeslotid = $1',
       [timeslotId]
     );if (timeslot.rows.length === 0) {
+      console.log('Timeslot query returned no rows for id:', timeslotId, 'result:', timeslot.rows);
       return res.status(404).json({ message: 'Idősáv nem található!' });
     }
     
     const timeslotStartTime = new Date(timeslot.rows[0].starttime);
     const timeslotEndTime = new Date(timeslot.rows[0].endtime);
+
+    const now = new Date();
+    if (timeslotStartTime <= now) {
+      return res.status(400).json({ message: 'A kiválasztott idősáv már elmúlt!' });
+    }
     
     // Ellenőrizzük, hogy a szolgáltatás belefér-e az idősávba
     const calculatedEndTime = new Date(timeslotStartTime.getTime() + serviceDurationMinutes * 60000);
@@ -88,57 +93,6 @@ const createBooking = async (req, res) => {
 
     // 5. Idősáv foglalása
     await updateTimeslotAvailability(timeslotId, newBooking.rows[0].foglalasid);
-
-    const auth =   {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    }
-    
-  //   // 6. Email küldése
-  //   const transporter = nodemailer.createTransport({
-  //     service: 'gmail',
-  //     auth,
-  //   });
-
-  //     //email az ügyfélnek megy
-  //     const customerMailOptions = {
-  //     from: process.env.EMAIL_USER, //admin email címe
-  //     to: email, // customer email címe
-  //     subject: 'Booking Confirmation',
-  //     text: `Dear ${name},\n\nThank you for your booking!\nService: ${serviceName}\nDate: ${datum}\nTime: ${timeslotStartTime.toLocaleTimeString('hu-HU', {
-  //       hour: '2-digit',
-  //       minute: '2-digit',
-  //     })}`,
-  //   };
-      
-  //   //Email az adminnak
-  //   const adminMailOptions = {
-  //     from: process.env.EMAIL_USER, // Az admin email címe a küldőként
-  //     to: process.env.EMAIL_USER,   // Az admin email címe a fogadóként
-  //     subject: 'Új foglalás érkezett',
-  //     text: `Új foglalás érkezett:\n\nNév: ${name}\nEmail: ${email}\nTelefonszám: ${phone}\nSzolgáltatás: ${serviceName}\nDátum: ${datum}\nIdőpont:${timeslotStartTime.toLocaleTimeString('hu-HU',{
-  //       hour: '2-digit',
-  //   minute: '2-digit',
-  // })}, \n\nKérjük, ellenőrizd az admin felületen!`,  
-  // };
-    
-  //   // Küldés az ügyfélnek
-  //   transporter.sendMail(customerMailOptions, (error) => {
-  //     if (error) {
-  //       console.error('Hiba az ügyfél email küldése során:', error);
-  //     } else {
-  //       console.log('Ügyfél email sikeresen elküldve.');
-  //     }
-  //   });
-
-  //   // Küldés az adminnak
-  //   transporter.sendMail(adminMailOptions, (error) => {
-  //     if (error) {
-  //       console.error('Hiba az admin email küldése során:', error);
-  //     } else {
-  //       console.log('Admin email sikeresen elküldve.');
-  //     }
-  //   });
   
     // 7. Válasz a kliensnek
     res.status(201).json({ message: 'Foglalás sikeresen létrehozva!', booking: newBooking.rows[0] });
@@ -209,7 +163,7 @@ const deleteBooking = async (req, res) => {
     }
 
     await deleteBookingById(bookingId);
-    await resetTimeslotAvailability(booking.timeslotId); // Idősáv visszaállítása
+    await resetTimeslotAvailability(booking.timeslotid); // Idősáv visszaállítása
 
     res.status(200).json({ message: 'Foglalás sikeresen törölve, az idősáv újra elérhető!' });
   } catch (error) {

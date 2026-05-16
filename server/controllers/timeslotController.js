@@ -12,15 +12,19 @@ if (!serviceId || !date) {
 
 try {
   // Idősávellenőrzés
-  const existingSlots = await pool.query(
-    'SELECT * FROM timeslots WHERE serviceid = $1 AND DATE(starttime) = $2 AND isavailable = true ORDER BY starttime',
+  const checkSlots = await pool.query(
+    'SELECT * FROM timeslots WHERE serviceid = $1 AND DATE(starttime) = $2 ORDER BY starttime',
     [serviceId, date]
   );
 
   // Ha már van idősáv, nem generál újat
-  if (existingSlots.rows.length > 0) {
-    return res.status(200).json({ message: 'Már léteznek idősávok erre a dátumra.', timeslots: existingSlots.rows });
+  if (checkSlots.rows.length > 0) {
+    const existingSlots = checkSlots.rows.filter(slot => slot.isavailable);
+    return res.status(200).json({ message: 'Idősávok lekérve!', timeslots: existingSlots });
   }
+
+  
+  
 
   // Ha nincs, generáljon idősávokat
   console.log('Nincsenek idősávok, generálás indítása...');
@@ -62,15 +66,17 @@ try {
     currentTime = nextTime;
   }
   // Mentés az adatbázisba
+  const insertedRows = [];
   for (const timeslot of generatedTimeslots) {
-    await pool.query(
+    const result = await pool.query(
       `INSERT INTO timeslots (starttime, endtime, isavailable, serviceid)
-       VALUES ($1, $2, $3, $4)`,
+       VALUES ($1, $2, $3, $4) RETURNING *`,
       [timeslot.starttime, timeslot.endtime, timeslot.isavailable, timeslot.serviceid]
     );
+    insertedRows.push(result.rows[0]);
   }
 
-  res.status(201).json({ message: 'Idősávok sikeresen generálva!', timeslots: generatedTimeslots });
+  res.status(201).json({ message: 'Idősávok sikeresen generálva!', timeslots: insertedRows });
 } catch (error) {
   console.error('Hiba az idősávok generálása során:', error.message);
   res.status(500).json({ message: 'Hiba történt az idősávok generálása során.' });
@@ -109,7 +115,7 @@ const createTimeslot = async (req, res) => {
       return res.status(400).json({ message: 'Az idősáv ütközik egy másik foglalt időponttal!' });
     }
     const result = await pool.query(
-      'INSERT INTO timeslots (starttime, endtime, datum, isAvailable) VALUES ($1, $2, $3, true) RETURNING *',
+      'INSERT INTO timeslots (starttime, endtime, datum, isavailable) VALUES ($1, $2, $3, true) RETURNING *',
       [startTime, endTime, datum]
     );
 
@@ -157,7 +163,7 @@ const deleteTimeslot = async (req, res) => {
 
   try {
     const result = await pool.query(
-      'DELETE FROM timeslots WHERE timeslotId = $1 RETURNING *',
+      'DELETE FROM timeslots WHERE timeslotid = $1 RETURNING *',
       [timeslotId]
     );
     if (result.rowCount === 0) {

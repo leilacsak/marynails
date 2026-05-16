@@ -60,4 +60,10 @@
     font-size: 0.9rem;
     margin-top: 10px;
   }
+
+  .payment-message {
+    margin: 12px 0;
+    font-size: 0.95rem;
+    color: #5a5a5a;
+  }
   

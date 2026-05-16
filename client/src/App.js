@@ -10,6 +10,7 @@ import Contact from "./Contact";
 import Login from "./Login";
 import AdminDashboard from "./AdminDashboard"
 import Payment from './Payment';
+import ThankYou from './ThankYou';
 
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/admin/login" element={<Login />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/thank-you" element={<ThankYou />} />
       </Routes>
     </Router>
   );
